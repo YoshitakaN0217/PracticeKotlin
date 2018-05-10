@@ -46,11 +46,11 @@ fun main(args: Array<String>) {
     }
     println(str)
     
-    val blank = when(x) {
-        is String -> x.isBlank()
-        else -> true
-    }
-    println(blank)
+//    val blank = when(x) {
+//        is String -> x.isBlank()
+//        else -> true
+//    }
+//    println(blank)
 }
 
 

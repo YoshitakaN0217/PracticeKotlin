@@ -1,3 +1,4 @@
+
 /**
  * 著書「Kotlinスタートブック」
  * 　第6章 P99~
@@ -5,49 +6,62 @@
 
 package practiceP99
 
+//※まだ改良の余地はあるみたい
+//Kotlinでgetter,setterはもっと簡単に実装できる
+
 interface Bucket {
-//    fun fill()
-//    fun drainAway()
-//    fun pourTo(that: Bucket)
+    // overrideを強制(C++の純粋仮想関数みたいな感じ)
+    fun fill()
+    fun drainAway()
+    fun pourTo(that: Bucket)
     
-//    fun getCapacity(): Int
-//    fun getQuantity(): Int
-//    fun setQuantity(quantity: Int): Int
+    fun getCapacity(): Int
+    fun getQuantity(): Int
+    fun setQuantity(quantity: Int)
     
+    //fun text()    overrideしていないのでコンパイルエラー
 }
 
-
 fun main(args: Array<String>) {
+
+    var bucket1 = createBucket(7)
+    var bucket2 = createBucket(4)
+
+    bucket1.fill()
+    // バケツ1からバケツ2へ注ぐ
+    bucket1.pourTo(bucket2)
     
-	val bucket = object: Bucket {
-        // バケツの容量
-        val capacity: Int = 5
-        // バケツの入っている水の量
-        var quantity: Int = 0
-        
-        // バケツを水で満たす
-        fun fill() {
-            quantity = capacity
-        }
-        // 排水する
-        fun drainAway() {
-            quantity = 0
-        }
-        // 入っている水の量を出力する
-        fun printQuantity() {
-            println(quantity)
-        }
-        // 他のバケツに注ぐ
-        fun pourTo(that: Bucket) {
-            //TODO:未実装
+    println(bucket1.getQuantity())
+    println(bucket2.getQuantity())
+}
+fun createBucket(capacity: Int): Bucket = object: Bucket {
+    var _quantity: Int = 0    
+
+    // バケツを水で満たす
+    override fun fill() {
+        setQuantity(getCapacity())
+    }
+    // 排水する
+    override fun drainAway() {
+        setQuantity(0)
+    }
+
+    // 他のバケツに注ぐ
+    override fun pourTo(that: Bucket) {
+        val thatVacuity = that.getCapacity() - that.getQuantity()
+        if (getQuantity() <= thatVacuity) {
+            that.setQuantity(that.getQuantity() + getQuantity())
+            drainAway()
+        }else{
+            that.fill()
+            setQuantity(getQuantity() - thatVacuity)
         }
     }
 
-    bucket.printQuantity()	// 0
-    bucket.fill()
-    bucket.printQuantity()	// 5
-    bucket.drainAway()
-    bucket.printQuantity()	// 0
-
-
+    override fun getCapacity(): Int = capacity
+    override fun getQuantity(): Int = _quantity
+    override fun setQuantity(quantity: Int) {
+        _quantity = quantity
+    }
 }
+

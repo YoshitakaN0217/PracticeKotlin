@@ -1,56 +1,44 @@
 /**
  * 著書「Kotlinスタートブック」
- * 　第8章 P121~
+ * 　第8章 P127~
  */
 
-package practiceP121
+package practiceP127
 
 
 fun main(args: Array<String>) {
-    val half = Rational(1,2)
-    println(half.numerator)
-    println(half.denominator)
+    val person = Person("Miho")
+    person.introductionMySelf()
     
-    val half2 = Rational3(1,2)
-    println("${half2.numerator}/${half2.denominator}")
-    var five = Rational3(5)
-    println("${five.numerator}/${five.denominator}")
+    val student = Student("くみ", 11002)
+//    println(student.id)
+//    println(student.name)
+    student.introductionMySelf()
     
-//    val half3 = Rational4(1,0)	// 例外が投げられる
-//    println("${half3.numerator}/${half3.denominator}")
+    val person2: Person = Student("マイク", 11001)
+    person2.introductionMySelf()
 
-	println("I like Kotlin".countSpace())
-    println("I like Kotlin".wordsCount)
-    
+    // Anyクラの継承
+    println(person2.toString())
+    println(person2.hashCode())
+    if (person == person2)
+        println("同じ生徒です")
+    else
+        println("違う生徒です")
 }
 
-// プライマリコンストラクタ　明示版
-class Rational constructor(n: Int, d: Int) {
-    val numerator: Int = n
-    val denominator: Int = d
-}
-// プライマリコンストラクタ　省略版
-class Rational2(val numerator: Int, val denominator: Int)
-// セカンダリコンストラクタ
-class Rational3(val numerator: Int, val denominator: Int) {
-    constructor(numerator: Int) : this(numerator, 1)	// セカンダリコンストラクタの中でプライマリコンストラクタを呼びたい時はthis
-}
-
-// イニシャライザ
-class Rational4(val numerator: Int, val denominator: Int) {
-	init {
-        // reqire:条件が真の時、例外を投げる標準ライブラリ
-        require(denominator != 0)        // バリデート
+// 継承
+// openをつけないとfinal(継承不可)
+open class Person(open val name: String) {
+    // メンバのオーバーライドもopenが必要
+    open fun introductionMySelf() {
+        println("I am $name.")
     }
 }
-
-
-// エクステンション:関数
-fun String.countSpace(): Int =
-	this.split("""\s+""".toRegex()).size
-// エクステンション:プロパティ(但しバッキングフィールドはもてない)
-val String.wordsCount: Int
-	get() = split("""\s+""".toRegex()).size
-
-
-
+// プロパティもオーバーライド可
+class Student(override val name: String, val id: Long): Person(name) {
+    override fun introductionMySelf() {
+        println(super.introductionMySelf())
+        println("I am $name(id:$id)")
+    }
+}
